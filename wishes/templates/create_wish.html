@@ -1,0 +1,46 @@
+{% extends 'main.html' %} {% block content %}
+<div class="container">
+  <div class="row justify-content-between">
+    <h2 class="col">Hello {{request.user.first_name}}! Make a wish!</h2>
+    <div class="col d-flex justify-content-end gap-3">
+      <a type="button" href="{% url 'signout' %}" class="btn btn-link">Logout</a>
+    </div>
+  </div>
+  <div class="row mt-4">
+    {% for field in form %}  
+    <p>  
+      {% for error in field.errors %}  
+        <small style="color: red">{{ error }}</small>  
+      {% endfor %}  
+    </p>  
+    {% endfor %}  
+    <div class="col-lg d-flex justify-content-center border border-secondary border-2 m-4" style="max-width: 30rem;">
+        
+        <form action="" method="post">
+            {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+              <li>
+                {{ message }}
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+            {% csrf_token %} 
+              <div class="d-flex justify-content-between mb-3 mt-3">
+                <label for="title" >I wish for: </label>
+                <input type="text" name="title"  id="title" value="{% if form.title.value != None %}{{form.title.value}}{% endif %}">
+              </div>
+              <div class="d-flex justify-content-between mb-3">
+                <label for="description" class="me-2">Description:</label>
+                <input type="text" name="description" id="description" value="{% if form.description.value != None %}{{form.description.value}}{% endif %}">
+              </div>
+          <div class="d-flex justify-content-center mb-2 gap-2">
+                <a href="{% url 'wishes:home' %}" class="btn btn-primary shadow">Cancel</a>
+                <input class="btn btn-primary shadow" type="submit" value="{% if edit %}Edit{% else %}Submit{% endif %}">
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

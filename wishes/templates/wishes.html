@@ -1,0 +1,84 @@
+{% extends 'main.html' %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-between">
+        <h2 class="col">Hello {{request.user.first_name}}!</h2>
+        <div class="col d-flex justify-content-end gap-3">
+            <a type="button" href="{% url 'signout' %}" class="btn btn-link">Logout</a>
+            <a type="button" href="{% url 'wishes:stats' %}" class="btn btn-secondary shadow">View stats</a>
+            <a type="button" href="{% url 'wishes:create-wish' %}" class="btn btn-light shadow">Make a wish!</a>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <h6>Your wish list:</h6>
+        <table class="table table-striped border border-dark border-2">
+            <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Date added</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for wish in ungranted_wishes %}
+                <tr>
+                    <th scope="row">{{wish.title}}</th>
+                    <td>{{wish.created}}</td>
+                    <td class="d-flex justify-content-start">
+                      {% if request.user == wish.user %}
+                      <form class="col col-md d-flex justify-content-center" action="{% url 'wishes:delete-wish' wish.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" value="Remove" class="btn btn-link" />
+                      </form>
+                      |
+                      <form class="col col-md d-flex justify-content-center">
+                        {% csrf_token %}
+                        <a type="button" href="{% url 'wishes:edit-wish' wish.id %}" class="col btn btn-link">Edit</a>
+                      </form>
+                      |
+                      <form class="col col-md d-flex justify-content-center" action="{% url 'wishes:grant-wish' wish.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" value="Granted" class="btn btn-link" />
+                      </form>
+                        
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+    <div class="row mt-4">
+        <h6>Granted Wishes:</h6>
+        <table class="table table-striped border border-dark border-2">
+            <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Date added</th>
+                <th scope="col">Date Granted</th>
+                <th scope="col">Likes</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for wish in granted_wishes %}
+                <tr>
+                    <th scope="row">{{wish.title}}</th>
+                    <td>{{wish.created}}</td>
+                    <td>{{wish.granted}}</td>
+                    <td>{{wish.likes.count}}</td>
+                    <td>
+                      {% if request.user != wish.user %}
+                        <form class="col col-md d-flex justify-content-center" action="{% url 'wishes:like-wish' wish.id %}" method="POST">
+                          {% csrf_token %}
+                          <input type="submit" value="Like" class="btn btn-link" />
+                        </form>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+</div>
+{% endblock content %}

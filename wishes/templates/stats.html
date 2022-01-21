@@ -1,0 +1,27 @@
+{% extends 'main.html' %} {% block content %}
+<div class="container">
+  <div class="row justify-content-between">
+    <h4 class="col">
+      Hello {{request.user.first_name}}! These are your stats!
+    </h4>
+    <div class="col d-flex justify-content-end gap-3">
+      <a type="button" href="{% url 'wishes:home' %}" class="btn btn-link"
+        >Dashboard</a
+      >
+      <a type="button" href="{% url 'signout' %}" class="btn btn-link"
+        >Logout</a
+      >
+    </div>
+  </div>
+  <div class="row">
+    <h6>Total wishes granted so far for all users: {{total_granted_wished.count}}</h6>
+  </div>
+  <div class="row">
+    <small>Your granted wishes: {{my_granted_wishes.count}} </small>
+  </div>
+  <div class="row">
+    <small>Your pending wishes: {{my_pending_wishes.count}}</small>
+  </div>
+</div>
+
+{% endblock content %}
